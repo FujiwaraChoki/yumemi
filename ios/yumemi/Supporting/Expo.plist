@@ -6,5 +6,6 @@
         <string>YOUR-APP-SDK-VERSION-HERE</string>
         <key>EXUpdatesURL</key>
         <string>YOUR-APP-URL-HERE</string>
+
 </dict>
 </plist>

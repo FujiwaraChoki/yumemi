@@ -6,10 +6,26 @@ const RegisterScreen = () => {
     const navigation = useNavigation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [response, setResponse] = useState({ status: 0, message: '' });
 
     const handleRegister = () => {
         // Handle registration logic here
-        console.log('Registering user with email:', email, 'and password:', password);
+        fetch('http://localhost:5000/api/users', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password }),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log('Success:', data);
+                setResponse(data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                setResponse(error);
+            });
     };
 
     const handleLogin = () => {
@@ -45,6 +61,8 @@ const RegisterScreen = () => {
                     <Text style={styles.loginButton}>Login</Text>
                 </TouchableOpacity>
             </View>
+
+            <Text style={response.status === 200 ? styles.notification_success : styles.notification_error}>{response.message}</Text>
         </View>
     );
 };
@@ -96,6 +114,16 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#007bff',
         textDecorationLine: 'underline',
+    },
+    notification_success: {
+        color: 'green',
+        fontSize: 16,
+        marginTop: 16,
+    },
+    notification_error: {
+        color: 'red',
+        fontSize: 16,
+        marginTop: 16,
     },
 });
 
