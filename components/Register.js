@@ -17,14 +17,16 @@ const RegisterScreen = () => {
             },
             body: JSON.stringify({ email, password }),
         })
-            .then((response) => response.json())
+            .then((response) => {
+                setResponse(response);
+                console.log(response);
+                return response.json();
+            })
             .then((data) => {
                 console.log('Success:', data);
-                setResponse(data);
             })
             .catch((error) => {
                 console.error('Error:', error);
-                setResponse(error);
             });
     };
 
