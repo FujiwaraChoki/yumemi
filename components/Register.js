@@ -10,7 +10,7 @@ const RegisterScreen = () => {
 
     const handleRegister = () => {
         // Handle registration logic here
-        fetch('http://localhost:5000/api/users', {
+        fetch('https://yumemi-backend-ih5q.vercel.app/api/users', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
