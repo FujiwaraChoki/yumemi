@@ -18,12 +18,11 @@ const RegisterScreen = () => {
             body: JSON.stringify({ email, password }),
         })
             .then((response) => {
-                setResponse(response);
-                console.log(response);
                 return response.json();
             })
             .then((data) => {
                 console.log('Success:', data);
+                setResponse(data);
             })
             .catch((error) => {
                 console.error('Error:', error);
@@ -121,11 +120,17 @@ const styles = StyleSheet.create({
         color: 'green',
         fontSize: 16,
         marginTop: 16,
+        backgroundColor: '#d4edda',
+        padding: 8,
+        borderRadius: 10
     },
     notification_error: {
         color: 'red',
         fontSize: 16,
         marginTop: 16,
+        backgroundColor: '#f8d7da',
+        padding: 8,
+        borderRadius: 10
     },
 });
 
