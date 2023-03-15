@@ -1,12 +1,22 @@
 import React from 'react';
-import { StyleSheet, View, Text, Image } from 'react-native';
+import { StyleSheet, View, Text, Image, Pressable } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 
 const UserCall = ({ user }) => {
+    const { name, picture } = user;
+
+    const navigation = useNavigation();
+
     return (
         <View style={styles.container}>
-            <Image source={{ uri: user.picture.thumbnail }} style={styles.image} />
+            <Pressable onPress={() => {
+                navigation.navigate('Profile', { user: user });
+            }}>
+                <Image source={{ uri: picture.thumbnail }} style={styles.image} id={"profile-avatar"} />
+            </Pressable>
             <View style={styles.info}>
-                <Text style={styles.name}>{`${user.name.first} ${user.name.last}`}</Text>
+                <Text style={styles.name}>{`${name.first} ${name.last}`}</Text>
                 <Text style={styles.time}>10:00 AM</Text>
             </View>
         </View>

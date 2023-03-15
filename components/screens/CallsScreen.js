@@ -1,29 +1,30 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, FlatList } from 'react-native';
 import UserCall from '../UserCall';
 
 const CallsScreen = () => {
+    const [users, setUsers] = useState([]);
+
     // Get random users function
     const getRandomUsers = async (num) => {
         const response = await fetch(`https://randomuser.me/api/?results=${num}`).then((res) =>
             res.json()
         ).catch((err) => console.log(err));
 
-        return response.results;
+        setUsers(response.results);
     };
 
-    const data = getRandomUsers(10)[0];
+    useEffect(() => {
+        getRandomUsers(10);
+    }, [])
 
-    console.table(data);
+    console.log(users);
 
     return (
         <View style={styles.container}>
-            <View style={styles.header}>
-                <Text style={styles.headerText}>Calls</Text>
-            </View>
             <View style={styles.content}>
                 <FlatList
-                    data={data}
+                    data={users}
                     renderItem={({ item }) => <UserCall user={item} />}
                     keyExtractor={(item) => item.login.uuid}
                 />

@@ -6,6 +6,7 @@ import ChatScreen from './components/screens/ChatScreen';
 import FriendsScreen from './components/screens/FriendsScreen';
 import SettingsScreen from './components/screens/SettingsScreen';
 import CallsScreen from './components/screens/CallsScreen';
+import Profile from './components/Profile.js';
 import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
@@ -53,19 +54,11 @@ const App = () => {
           tabBarVisible: false,
           headerShown: true,
         }} />
-        <Tab.Screen
-          name="Account"
-          component={AccountScreen}
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <Ionicons
-                name="person-outline"
-                size={30}
-                color={focused ? '#2f95dc' : '#ccc'}
-              />
-            ),
-          }}
-        />
+        <Tab.Screen name='Profile' component={Profile} options={{
+          tabBarButton: () => null,
+          tabBarVisible: false,
+          headerShown: true,
+        }} />
         <Tab.Screen
           name="Calls"
           component={CallsScreen}
