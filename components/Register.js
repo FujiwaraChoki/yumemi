@@ -62,8 +62,9 @@ const RegisterScreen = () => {
                     <Text style={styles.loginButton}>Login</Text>
                 </TouchableOpacity>
             </View>
-
-            <Text style={response.status === 200 ? styles.notification_success : styles.notification_error}>{response.message}</Text>
+            {response.message !== '' && (
+                <Text style={response.status === 200 ? styles.notification_success : styles.notification_error}>{response.message}</Text>
+            )}
         </View>
     );
 };
