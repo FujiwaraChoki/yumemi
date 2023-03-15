@@ -1,0 +1,52 @@
+[
+    {
+        "cell": "7160957179",
+        "dob": {
+            "age": 38,
+            "date": "1984-09-09T06:51:35.182Z"
+        },
+        "email": "anirudh.gupta@example.com",
+        "gender": "male",
+        "id": {
+            "name": "UIDAI",
+            "value": "821253346546"
+        },
+        "location": {
+            "city": "Khammam",
+            "coordinates": [Object
+            ],
+            "country": "India",
+            "postcode": 73176,
+            "state": "Madhya Pradesh",
+            "street": [Object
+            ],
+            "timezone": [Object
+            ]
+        },
+        "login": {
+            "md5": "231a4196d765132d7ee6ecbf62d441fa",
+            "password": "rugby",
+            "salt": "IP7FyUyY",
+            "sha1": "c2c837a8381ac3b677eade81602ae947a5a581b1",
+            "sha256": "04317e778e0cdfd6b488addc1c32cc84d535a0a17ba81ec3441eecb9c9f50f42",
+            "username": "brownwolf363",
+            "uuid": "1561e78b-8ae8-46b6-8c4f-4b215d391674"
+        },
+        "name": {
+            "first": "Anirudh",
+            "last": "Gupta",
+            "title": "Mr"
+        },
+        "nat": "IN",
+        "phone": "8825034223",
+        "picture": {
+            "large": "https://randomuser.me/api/portraits/men/10.jpg",
+            "medium": "https://randomuser.me/api/portraits/med/men/10.jpg",
+            "thumbnail": "https://randomuser.me/api/portraits/thumb/men/10.jpg"
+        },
+        "registered": {
+            "age": 18,
+            "date": "2005-01-28T00:16:42.658Z"
+        }
+    }
+]
