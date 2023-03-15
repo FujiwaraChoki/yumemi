@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import WelcomeScreen from './components/WelcomeScreen';
 import Register from './components/Register';
 import AccountScreen from './components/screens/AccountScreen';
@@ -11,6 +11,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Text } from 'react-native';
 
 const Tab = createBottomTabNavigator();
 
@@ -41,9 +42,6 @@ const App = () => {
         screenOptions={{
           activeTintColor: '#FF6347',
           inactiveTintColor: 'gray',
-          // Show blue button
-          tabBarShowLabel: true,
-          headerShown: true,
         }}
         tabBarStyle={styles.tabBar}
       >
@@ -79,6 +77,7 @@ const App = () => {
           name="Chat"
           component={ChatScreen}
           options={{
+            tabBarBadge: 3,
             tabBarIcon: ({ focused }) => (
               <Ionicons
                 name="chatbox-outline"
