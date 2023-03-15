@@ -41,6 +41,9 @@ const App = () => {
         screenOptions={{
           activeTintColor: '#FF6347',
           inactiveTintColor: 'gray',
+          // Show blue button
+          tabBarShowLabel: true,
+          headerShown: true,
         }}
         tabBarStyle={styles.tabBar}
       >
