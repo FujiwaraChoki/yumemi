@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, FlatList } from 'react-native';
+import { StyleSheet, View, FlatList } from 'react-native';
 import UserCall from '../UserCall';
 
 const CallsScreen = () => {
@@ -16,9 +16,7 @@ const CallsScreen = () => {
 
     useEffect(() => {
         getRandomUsers(10);
-    }, [])
-
-    console.log(users);
+    }, []);
 
     return (
         <View style={styles.container}>

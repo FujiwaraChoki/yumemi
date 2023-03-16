@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const RegisterScreen = () => {
     const navigation = useNavigation();
+    const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [response, setResponse] = useState({ status: 0, message: '' });
+    const authKey = 'phaXf7,rxlO-jiFA';
 
     const handleRegister = () => {
         // Handle registration logic here
@@ -15,13 +18,15 @@ const RegisterScreen = () => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ email, password }),
+            body: JSON.stringify({ authorization: authKey, username: username, email: email, password: password }),
         })
             .then((response) => {
                 return response.json();
             })
             .then((data) => {
                 console.log('Success:', data);
+                AsyncStorage.setItem('token', data.user.token);
+                AsyncStorage.setItem('user', JSON.stringify(data.user));
                 setResponse(data);
             })
             .catch((error) => {
@@ -37,6 +42,14 @@ const RegisterScreen = () => {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Create an account</Text>
+            <TextInput 
+                style={styles.input}
+                placeholder="Username"
+                onChangeText={setUsername}
+                value={username}
+                autoCapitalize="none"
+                placeholderTextColor="#aaa"
+            />
             <TextInput
                 style={styles.input}
                 placeholder="Email"

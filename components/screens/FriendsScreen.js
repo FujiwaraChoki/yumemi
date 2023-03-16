@@ -1,32 +1,87 @@
-import React from 'react';
-import { View, Text, FlatList } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, TextInput, FlatList, StyleSheet, Pressable } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const FriendsScreen = () => {
-    const data = [
-        { id: '1', name: 'Alice' },
-        { id: '2', name: 'Bob' },
-        { id: '3', name: 'Charlie' },
-        { id: '4', name: 'David' },
-        { id: '5', name: 'Eve' },
-    ];
+    const friends = [];
+    const [friendUsername, setFriendUsername] = useState('');
+    const [user, setUser] = useState(null);
 
-    const Item = ({ name }) => (
-        <View style={{ padding: 10 }}>
-            <Text>{name}</Text>
-        </View>
-    );
+    const getUser = async () => {
+        const userNow = await AsyncStorage.getItem('user');
+        if (userNow != null) {
+            setUser(JSON.parse(userNow));
+        }
+    };
 
-    const renderItem = ({ item }) => (
-        <Item name={item.name} />
-    );
+    getUser();
+
+    const handleAddFriend = async () => {
+        await fetch("https://yumemi-backend-ih5q.vercel.app/api/friends", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                authorization: 'phaXf7,rxlO-jiFA',
+                username: friendUsername,
+                loggedInUsername: user.username
+            }),
+        })
+    };
 
     return (
-        <FlatList
-            data={data}
-            renderItem={renderItem}
-            keyExtractor={item => item.id}
-        />
-    );
+        <View style={styles.container}>
+            <Text style={styles.title}>Friends</Text>
+            <View style={styles.searchContainer}>
+                <TextInput
+                    style={styles.addFriendSearch}
+                    placeholder="Search for friends"
+                    onChangeText={setFriendUsername}
+                    value={friendUsername}
+                    placeholderTextColor="#aaa"
+                />
+                <Pressable style={styles.searchIcon} onPress={() => {
+                    handleAddFriend();
+                }}>
+                    <Ionicons name="search" size={24} color="black" />
+                </Pressable>
+            </View>
+            <FlatList
+                data={friends}
+                renderItem={({ item }) => <UserCall user={item} />}
+                keyExtractor={(item) => item.login.uuid}
+            />
+        </View>
+    )
 };
+
+const styles = StyleSheet.create({
+    container: {
+        padding: 20,
+    },
+    title: {
+        fontSize: 20,
+        fontWeight: 'bold',
+    },
+    searchContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    addFriendSearch: {
+        backgroundColor: '#fff',
+        padding: 12,
+        borderRadius: 4,
+        marginTop: 16,
+        width: '80%',
+    },
+    searchIcon: {
+        padding: 12,
+        marginTop: 16,
+        width: '20%',
+    }
+})
 
 export default FriendsScreen;

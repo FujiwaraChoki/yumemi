@@ -1,21 +1,41 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import WelcomeScreen from './components/WelcomeScreen';
 import Register from './components/Register';
-import AccountScreen from './components/screens/AccountScreen';
+import { HeaderButton } from 'react-navigation-header-buttons';
 import ChatScreen from './components/screens/ChatScreen';
 import FriendsScreen from './components/screens/FriendsScreen';
 import SettingsScreen from './components/screens/SettingsScreen';
 import CallsScreen from './components/screens/CallsScreen';
 import Profile from './components/Profile.js';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Text } from 'react-native';
 
 const Tab = createBottomTabNavigator();
 
 const App = () => {
+  const [isFirstLaunch, setIsFirstLaunch] = useState(null);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    AsyncStorage.getItem('alreadyLaunched').then((value) => {
+      if (value == null) {
+        AsyncStorage.setItem('alreadyLaunched', 'true'); // No need to wait for `setItem` to finish, although you might want to handle errors
+        setIsFirstLaunch(true);
+      } else {
+        setIsFirstLaunch(false);
+      }
+    }); // Add some error handling, also you can simply do setIsFirstLaunch(null)
+
+    AsyncStorage.getItem('user').then((value) => {
+      if (value != null) {
+        setUser(JSON.parse(value));
+      }
+    });
+  }, []);
+
   return (
     <NavigationContainer>
       <Tab.Navigator
@@ -45,11 +65,15 @@ const App = () => {
         }}
         tabBarStyle={styles.tabBar}
       >
-        <Tab.Screen name='Welcome' component={WelcomeScreen} options={{
-          tabBarButton: () => null,
-          tabBarVisible: false,
-          headerShown: true,
-        }} />
+        {isFirstLaunch == null ? null : isFirstLaunch ? (
+          <Tab.Screen name='Welcome' component={WelcomeScreen} options={{
+            tabBarButton: () => null,
+            tabBarVisible: false,
+            headerShown: true,
+          }} />
+        ) : (
+          null
+        )}
         <Tab.Screen name='Register' component={Register} options={{
           tabBarButton: () => null,
           tabBarVisible: false,
@@ -113,6 +137,40 @@ const App = () => {
             ),
           }}
         />
+        <Tab.Screen
+          name="Logout"
+          component={SettingsScreen}
+          options={{
+            tabBarIcon: ({ focused }) => (
+              <Ionicons
+                name="log-out-outline"
+                size={30}
+                color={focused ? '#2f95dc' : '#ccc'}
+              />
+            ),
+          }}
+          onPress={() => {
+            const handleLogout = async () => {
+              const token = user.token;
+              await AsyncStorage.removeItem('user');
+              setUser(null);
+
+              await fetch('https://yumemi-backend-ih5q.vercel.app/api/logout', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  token
+                }),
+              });
+            };
+
+            handleLogout();
+          }}
+        />
+
+        {/* HERE */}
       </Tab.Navigator>
     </NavigationContainer>
   );
