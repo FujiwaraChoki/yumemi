@@ -1,13 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, TextInput, Button } from 'react-native';
+import { Alert } from 'react-native';
 
 const AccountScreen = () => {
-    const [name, setName] = React.useState('');
-    const [email, setEmail] = React.useState('');
-    const [password, setPassword] = React.useState('');
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
-    const handleSave = () => {
-        // handle save logic
+    const handleSave = async () => {
+        await fetch("https://yumemi-backend-ih5q.vercel.app/api/account", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username: username,
+                email: email,
+                password: password
+            }),
+        }).then(response => response.json())
+            .then(data => {
+                Alert.alert('Success', 'Account information has been updated.');
+                console.log('Success:', data);
+            })
     };
 
     return (
@@ -15,8 +30,8 @@ const AccountScreen = () => {
             <Text>Account Information</Text>
             <TextInput
                 placeholder="Name"
-                value={name}
-                onChangeText={text => setName(text)}
+                value={username}
+                onChangeText={text => setUsername(text)}
             />
             <TextInput
                 placeholder="Email"
