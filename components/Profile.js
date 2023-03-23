@@ -1,9 +1,41 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, Image } from 'react-native';
+// Import router
+import { useNavigation } from '@react-navigation/native';
 
 const Profile = ({ route }) => {
     // Get user object from route params
-    const { user } = route.params;
+    const [user, setUser] = useState({
+        name: {
+            first: 'Loading...',
+            last: '',
+        },
+        email: '',
+        phone: '',
+        location: {
+            street: {
+                number: 0,
+                name: '',
+            },
+            city: '',
+            state: '',
+            country: '',
+        },
+        picture: {
+            large: 'https://www.freeiconspng.com/thumbs/person-icon/clipart--person-icon--cliparts-15.png',
+        },
+    });
+    const navigation = useNavigation();
+
+    // If user is null, return error message
+    useEffect(() => {
+        setUser(route.params?.user);
+    }, [route.params?.user]);
+    
+    if(!user) {
+        navigation.navigate('Chat');
+        return null;
+    }
 
     return (
         <View style={styles.container}>
@@ -36,6 +68,16 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
+    },
+    errorContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    errorTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#f00',
     },
     content: {
         flex: 1,

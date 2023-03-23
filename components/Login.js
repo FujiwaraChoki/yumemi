@@ -1,30 +1,30 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const RegisterScreen = ({ route }) => {
+const LoginScreen = ({ route }) => {
     const navigation = useNavigation();
     const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [response, setResponse] = useState({ status: 0, message: '' });
+    const authKey = 'phaXf7,rxlO-jiFA';
 
-    const handleRegister = async () => {
+    const handleLogin = () => {
         // Handle registration logic here
-        await fetch('https://yumemi-backend.vercel.app/api/users', {
-            method: 'POST',
+        fetch('https://yumemi-backend.vercel.app/api/login', {
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'authorization': 'phaXf7,rxlO-jiFA'
-            },
-            body: JSON.stringify({
+                authorization: authKey,
                 username: username,
-                email: email,
                 password: password
-            }),
+            },
         })
-            .then((response) => response.json())
+            .then((response) => {
+                console.log(response);
+                return response.json();
+            })
             .then((data) => {
                 console.log('Success:', data);
                 AsyncStorage.setItem('token', data.user.token);
@@ -32,35 +32,34 @@ const RegisterScreen = ({ route }) => {
                 setResponse(data);
             })
             .catch((error) => {
-                setResponse({ status: 500, message: error.message });
+                console.error('Error:', error);
             });
     };
 
-    if(route.params?.screen === 'Chat') {
-        navigation.navigate('Chat');
-    }
-
-    const handleLogin = () => {
+    const handleRegister = () => {
         // Navigate to login screen
-        navigation.navigate('Login');
+        navigation.navigate('Register');
     };
+
+    useEffect(() => {
+        if (response.status === 200) {
+            setTimeout(() => {
+                // Reload screen then navigate to chat screen
+                if(route.params?.screen === 'Chat') {
+                    navigation.navigate('Chat');
+                }
+            }, 3000);
+        }
+    }, [response])
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Create an account</Text>
-            <TextInput 
+            <Text style={styles.title}>Login to your Account</Text>
+            <TextInput
                 style={styles.input}
                 placeholder="Username"
                 onChangeText={setUsername}
                 value={username}
-                autoCapitalize="none"
-                placeholderTextColor="#aaa"
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Email"
-                onChangeText={setEmail}
-                value={email}
                 autoCapitalize="none"
                 placeholderTextColor="#aaa"
             />
@@ -72,13 +71,13 @@ const RegisterScreen = ({ route }) => {
                 secureTextEntry
                 placeholderTextColor="#aaa"
             />
-            <TouchableOpacity style={styles.button} onPress={handleRegister}>
-                <Text style={styles.buttonText}>Register</Text>
+            <TouchableOpacity style={styles.button} onPress={handleLogin}>
+                <Text style={styles.buttonText}>Login</Text>
             </TouchableOpacity>
             <View style={styles.login}>
-                <Text style={styles.loginText}>Already have an account?</Text>
-                <TouchableOpacity onPress={handleLogin}>
-                    <Text style={styles.loginButton}>Login</Text>
+                <Text style={styles.loginText}>Don't have an account yet?</Text>
+                <TouchableOpacity onPress={handleRegister}>
+                    <Text style={styles.loginButton}>Register</Text>
                 </TouchableOpacity>
             </View>
             {response.message !== '' && (
@@ -154,4 +153,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default RegisterScreen;
+export default LoginScreen;

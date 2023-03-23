@@ -18,7 +18,7 @@ const FriendsScreen = () => {
     getUser();
 
     const handleAddFriend = async () => {
-        await fetch("https://yumemi-backend-ih5q.vercel.app/api/friends", {
+        await fetch("https://yumemi-backend.vercel.app/api/friends", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -8,10 +8,11 @@ const AccountScreen = () => {
     const [password, setPassword] = useState('');
 
     const handleSave = async () => {
-        await fetch("https://yumemi-backend-ih5q.vercel.app/api/account", {
+        await fetch("https://yumemi-backend.vercel.app/api/account", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'authorization': 'phaXf7,rxlO-jiFA'
             },
             body: JSON.stringify({
                 username: username,

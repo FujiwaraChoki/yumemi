@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import WelcomeScreen from './components/WelcomeScreen';
 import Register from './components/Register';
-import { HeaderButton } from 'react-navigation-header-buttons';
 import ChatScreen from './components/screens/ChatScreen';
 import FriendsScreen from './components/screens/FriendsScreen';
 import SettingsScreen from './components/screens/SettingsScreen';
 import CallsScreen from './components/screens/CallsScreen';
 import Profile from './components/Profile.js';
+import Login from './components/Login';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
-import { Platform, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
@@ -18,6 +18,7 @@ const Tab = createBottomTabNavigator();
 const App = () => {
   const [isFirstLaunch, setIsFirstLaunch] = useState(null);
   const [user, setUser] = useState(null);
+  const [initRouteName, setInitRouteName] = useState('Welcome');
 
   useEffect(() => {
     AsyncStorage.getItem('alreadyLaunched').then((value) => {
@@ -29,17 +30,39 @@ const App = () => {
       }
     }); // Add some error handling, also you can simply do setIsFirstLaunch(null)
 
+    if(user) {
+      setInitRouteName('Chat');
+    }
+  }, [isFirstLaunch, initRouteName]);
+
+  const handleLogout = async () => {
+    const token = user.token;
+    await AsyncStorage.removeItem('user');
+    setUser(null);
+
+    await fetch('https://yumemi-backend.vercel.app/api/logout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        token
+      }),
+    });
+  };
+
+  useEffect(() => {
     AsyncStorage.getItem('user').then((value) => {
       if (value != null) {
         setUser(JSON.parse(value));
       }
     });
-  }, []);
+  })
 
   return (
     <NavigationContainer>
       <Tab.Navigator
-        initialRouteName='Welcome'
+        initialRouteName={initRouteName}
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color, size }) => {
             let iconName;
@@ -74,103 +97,118 @@ const App = () => {
         ) : (
           null
         )}
-        <Tab.Screen name='Register' component={Register} options={{
-          tabBarButton: () => null,
-          tabBarVisible: false,
-          headerShown: true,
-        }} />
+        {
+          !user && (
+            <>
+              <Tab.Screen name='Register' component={Register} options={{
+                tabBarIcon: ({ focused }) => (
+                  <Ionicons
+                    name="person-add-outline"
+                    size={30}
+                    color={focused ? '#2f95dc' : '#ccc'}
+
+                  />
+                ),
+              }} />
+              <Tab.Screen name='Login' component={Login} options={{
+                tabBarIcon: ({ focused }) => (
+                  <Ionicons
+                    name="log-in-outline"
+                    size={30}
+                    color={focused ? '#2f95dc' : '#ccc'}
+
+                  />
+                ),
+              }} />
+            </>
+          )
+        }
         <Tab.Screen name='Profile' component={Profile} options={{
           tabBarButton: () => null,
           tabBarVisible: false,
           headerShown: true,
         }} />
-        <Tab.Screen
-          name="Calls"
-          component={CallsScreen}
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <Ionicons
-                name="call-outline"
-                size={30}
-                color={focused ? '#2f95dc' : '#ccc'}
+        {
+          user && (
+            <>
+              <Tab.Screen
+                name="Calls"
+                component={CallsScreen}
+                options={{
+                  tabBarIcon: ({ focused }) => (
+                    <Ionicons
+                      name="call-outline"
+                      size={30}
+                      color={focused ? '#2f95dc' : '#ccc'}
+                    />
+                  ),
+                }}
               />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Chat"
-          component={ChatScreen}
-          options={{
-            tabBarBadge: 3,
-            tabBarIcon: ({ focused }) => (
-              <Ionicons
-                name="chatbox-outline"
-                size={30}
-                color={focused ? '#2f95dc' : '#ccc'}
+              <Tab.Screen
+                name="Chat"
+                component={ChatScreen}
+                options={{
+                  tabBarBadge: 3,
+                  tabBarIcon: ({ focused }) => (
+                    <Ionicons
+                      name="chatbox-outline"
+                      size={30}
+                      color={focused ? '#2f95dc' : '#ccc'}
+                    />
+                  ),
+                  headerRight: () => (
+                    <Ionicons
+                      name="add-circle-outline"
+                      size={30}
+                      color="#2f95dc"
+                      style={{ marginRight: 10 }}
+                    />
+                  ),
+                }}
               />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Friends"
-          component={FriendsScreen}
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <Ionicons
-                name="people-outline"
-                size={30}
-                color={focused ? '#2f95dc' : '#ccc'}
+              <Tab.Screen
+                name="Friends"
+                component={FriendsScreen}
+                options={{
+                  tabBarIcon: ({ focused }) => (
+                    <Ionicons
+                      name="people-outline"
+                      size={30}
+                      color={focused ? '#2f95dc' : '#ccc'}
+                    />
+                  ),
+                }}
               />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Settings"
-          component={SettingsScreen}
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <Ionicons
-                name="settings-outline"
-                size={30}
-                color={focused ? '#2f95dc' : '#ccc'}
+              <Tab.Screen
+                name="Settings"
+                component={SettingsScreen}
+                options={{
+                  tabBarIcon: ({ focused }) => (
+                    <Ionicons
+                      name="settings-outline"
+                      size={30}
+                      color={focused ? '#2f95dc' : '#ccc'}
+                    />
+                  ),
+                }}
               />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Logout"
-          component={SettingsScreen}
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <Ionicons
-                name="log-out-outline"
-                size={30}
-                color={focused ? '#2f95dc' : '#ccc'}
+              <Tab.Screen
+                name="Logout"
+                component={WelcomeScreen}
+                options={{
+                  tabBarIcon: ({ focused }) => (
+                    <Ionicons
+                      name="log-out-outline"
+                      size={30}
+                      color={focused ? '#2f95dc' : '#ccc'}
+                      onPress={handleLogout}
+                    />
+                  ),
+                }}
               />
-            ),
-          }}
-          onPress={() => {
-            const handleLogout = async () => {
-              const token = user.token;
-              await AsyncStorage.removeItem('user');
-              setUser(null);
-
-              await fetch('https://yumemi-backend-ih5q.vercel.app/api/logout', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                  token
-                }),
-              });
-            };
-
-            handleLogout();
-          }}
-        />
-
-        {/* HERE */}
+            </>
+          )
+        }
       </Tab.Navigator>
     </NavigationContainer>
   );
