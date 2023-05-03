@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, Image } from 'react-native';
-// Import router
 import { useNavigation } from '@react-navigation/native';
 
 const Profile = ({ route }) => {
@@ -29,10 +28,12 @@ const Profile = ({ route }) => {
 
     // If user is null, return error message
     useEffect(() => {
-        setUser(route.params?.user);
+        if (user !== null) {
+            setUser(route.params?.user);
+        }
     }, [route.params?.user]);
-    
-    if(!user) {
+
+    if (!user) {
         navigation.navigate('Chat');
         return null;
     }
@@ -51,7 +52,7 @@ const Profile = ({ route }) => {
                         <Text style={styles.infoText}>{user.phone}</Text>
                     </View>
                     <View style={styles.infoItem}>
-                        <Text style={styles.infoTitle}>Address</Text>
+                        <Text style={styles.infoTitle}>Adress</Text>
                         <View style={styles.infoText}>
                             <Text>{user.location.street.number} {user.location.street.name}</Text>
                             <Text>{user.location.city}, {user.location.state} {user.location.postcode}</Text>
