@@ -14,7 +14,7 @@
     "@react-native-community/slider": "^4.4.2",
     "@react-navigation/bottom-tabs": "^6.5.7",
     "@react-navigation/native": "^6.1.6",
-    "expo": "~48.0.6",
+    "expo": "~50.0.0",
     "expo-auth-session": "~4.0.3",
     "expo-random": "~13.1.1",
     "expo-splash-screen": "~0.18.1",
