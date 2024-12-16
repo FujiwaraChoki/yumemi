@@ -13,7 +13,7 @@
     "@react-native-async-storage/async-storage": "1.17.11",
     "@react-native-community/slider": "^4.4.2",
     "@react-navigation/bottom-tabs": "^6.5.7",
-    "@react-navigation/native": "^6.1.6",
+    "@react-navigation/native": "^7.0.14",
     "expo": "~52.0.5",
     "expo-auth-session": "~6.0.0",
     "expo-random": "~13.1.1",
